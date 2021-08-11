@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "text": "I am the starting text of the video",
+    "startingTime": 0,
+    "filename": "audio/index-1-WedAug11202119:50:33.wav",
+    "duration": 2.6129705215419503,
+    "endingTime": 2.6129705215419503
+  },
+  {
+    "id": 2,
+    "text": "I am the second  text of the video",
+    "startingTime": 10,
+    "filename": "audio/index-2-WedAug11202119:50:38.wav",
+    "duration": 2.4968707482993198,
+    "endingTime": 12.496870748299319
+  },
+  {
+    "id": 3,
+    "text": "I am the third text of the video",
+    "startingTime": 20,
+    "filename": "audio/index-3-WedAug11202119:50:43.wav",
+    "duration": 2.6129705215419503,
+    "endingTime": 22.61297052154195
+  }
+]

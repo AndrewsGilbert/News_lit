@@ -1,0 +1,15 @@
+[
+    {    "id":1,
+        "text": "I am the starting text of the video",
+        "startingTime": 0
+    },
+    {   "id":2,
+        "text": "I am the second  text of the video",
+        "startingTime": 10
+    },
+    {   "id":3,
+        "text": "I am the third text of the video",
+        "startingTime": 20
+    }
+    
+]
