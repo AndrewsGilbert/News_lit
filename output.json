@@ -1,26 +1,37 @@
-[
-  {
-    "id": 1,
-    "text": "I am the starting text of the video",
-    "startingTime": 0,
-    "filename": "audio/index-1-WedAug11202119:50:33.wav",
-    "duration": 2.6129705215419503,
-    "endingTime": 2.6129705215419503
-  },
-  {
-    "id": 2,
-    "text": "I am the second  text of the video",
-    "startingTime": 10,
-    "filename": "audio/index-2-WedAug11202119:50:38.wav",
-    "duration": 2.4968707482993198,
-    "endingTime": 12.496870748299319
-  },
-  {
-    "id": 3,
-    "text": "I am the third text of the video",
-    "startingTime": 20,
-    "filename": "audio/index-3-WedAug11202119:50:43.wav",
-    "duration": 2.6129705215419503,
-    "endingTime": 22.61297052154195
-  }
-]
+{
+  "detail": [
+    {
+      "id": 1,
+      "text": "What is Grid?",
+      "startingTime": 1,
+      "audioFilename": "audio/index-1-ThuAug12202119:17:06.wav",
+      "duration": 1.417142857142857,
+      "endingTime": 2.4171428571428573
+    },
+    {
+      "id": 2,
+      "text": "The CSS Grid Layout Module offers a grid-based layout system.It has  columns and rows and  making it easier to design web pages.No need to use floats and positioning",
+      "startingTime": 4,
+      "audioFilename": "audio/index-2-ThuAug12202119:17:06.1.0048133030990174.wav",
+      "duration": 10.99609977324263,
+      "endingTime": 14.99609977324263
+    },
+    {
+      "id": 3,
+      "text": "Created column line",
+      "startingTime": 15,
+      "audioFilename": "audio/index-3-ThuAug12202119:17:06.wav",
+      "duration": 2.1834013605442175,
+      "endingTime": 17.183401360544217
+    },
+    {
+      "id": 4,
+      "text": "Created row line",
+      "startingTime": 18,
+      "audioFilename": "audio/index-4-ThuAug12202119:17:06.wav",
+      "duration": 2.253061224489796,
+      "endingTime": 20.253061224489795
+    }
+  ],
+  "videoFilename": "video/ThuAug12202119:17:06.old"
+}

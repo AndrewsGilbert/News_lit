@@ -1,15 +1,19 @@
 [
     {    "id":1,
-        "text": "I am the starting text of the video",
-        "startingTime": 0
+        "text": "What is Grid?",
+        "startingTime": 1
     },
     {   "id":2,
-        "text": "I am the second  text of the video",
-        "startingTime": 10
+        "text": "The CSS Grid Layout Module offers a grid-based layout system.It has  columns and rows and  making it easier to design web pages.No need to use floats and positioning",
+        "startingTime": 4
     },
     {   "id":3,
-        "text": "I am the third text of the video",
-        "startingTime": 20
+        "text": "Created column line",
+        "startingTime": 15
+    },
+    {   "id":4,
+        "text": "Created row line",
+        "startingTime": 18
     }
     
 ]
