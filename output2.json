@@ -1,0 +1,89 @@
+{
+  "detail": [
+    {
+      "id": 1,
+      "data": {
+        "audioConfig": {
+          "audioEncoding": "LINEAR16",
+          "pitch": 0.5,
+          "speakingRate": 0.85
+        },
+        "input": {
+          "text": "Grid is latest CSS tool on web development"
+        },
+        "voice": {
+          "languageCode": "en-IN",
+          "name": "en-IN-Wavenet-A"
+        }
+      },
+      "startingTime": 1,
+      "audioFilename": "audio/index-1-TueAug17202117:32:05.1.mp3",
+      "duration": 2.976,
+      "endingTime": 3.976
+    },
+    {
+      "id": 2,
+      "data": {
+        "audioConfig": {
+          "audioEncoding": "LINEAR16",
+          "pitch": 1.5,
+          "speakingRate": 0.85
+        },
+        "input": {
+          "text": "The CSS Grid Layout Module offers a grid-based layout system, with rows and columns, making it easier to design web pages without having to use floats and positioning."
+        },
+        "voice": {
+          "languageCode": "en-IN",
+          "name": "en-IN-Wavenet-C"
+        }
+      },
+      "startingTime": 4,
+      "audioFilename": "audio/index-2-TueAug17202117:32:05.1.0010666666666668.mp3",
+      "duration": 10.992,
+      "endingTime": 14.992
+    },
+    {
+      "id": 3,
+      "data": {
+        "audioConfig": {
+          "audioEncoding": "LINEAR16",
+          "pitch": 1.5,
+          "speakingRate": 0.85
+        },
+        "input": {
+          "text": "Created column line"
+        },
+        "voice": {
+          "languageCode": "en-IN",
+          "name": "en-IN-Wavenet-B"
+        }
+      },
+      "startingTime": 15,
+      "audioFilename": "audio/index-3-TueAug17202117:32:05.mp3",
+      "duration": 1.5189583333333334,
+      "endingTime": 16.518958333333334
+    },
+    {
+      "id": 4,
+      "data": {
+        "audioConfig": {
+          "audioEncoding": "LINEAR16",
+          "pitch": 1,
+          "speakingRate": 0.85
+        },
+        "input": {
+          "text": "Row line also created, Thank you! "
+        },
+        "voice": {
+          "languageCode": "en-IN",
+          "name": "en-IN-Wavenet-B"
+        }
+      },
+      "startingTime": 18,
+      "audioFilename": "audio/index-4-TueAug17202117:32:05.mp3",
+      "duration": 2.5450416666666666,
+      "endingTime": 20.545041666666666
+    }
+  ],
+  "videoFilename": "video/TueAug17202117:32:05.mp4"
+}

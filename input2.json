@@ -1,0 +1,71 @@
+[
+    {   "id":1,
+        "data": {
+            "audioConfig": {
+              "audioEncoding": "LINEAR16",
+              "pitch": 0.5,
+              "speakingRate": 0.85
+            },
+            "input": {
+              "text": "Grid is latest CSS tool on web development"
+            },
+            "voice": {
+              "languageCode": "en-IN",
+              "name": "en-IN-Wavenet-A"
+            }
+          },
+        "startingTime": 1
+    },
+    {   "id":2,
+        "data": {
+            "audioConfig": {
+              "audioEncoding": "LINEAR16",
+              "pitch": 1.5,
+              "speakingRate": 0.85
+            },
+            "input": {
+              "text": "The CSS Grid Layout Module offers a grid-based layout system, with rows and columns, making it easier to design web pages without having to use floats and positioning."
+            },
+            "voice": {
+              "languageCode": "en-IN",
+              "name": "en-IN-Wavenet-C"
+            }
+          },
+        "startingTime": 4
+    },
+    {   "id":3,
+        "data": {
+            "audioConfig": {
+              "audioEncoding": "LINEAR16",
+              "pitch": 1.5,
+              "speakingRate": 0.85
+            },
+            "input": {
+              "text": "Created column line"
+            },
+            "voice": {
+              "languageCode": "en-IN",
+              "name": "en-IN-Wavenet-B"
+            }
+          },
+        "startingTime": 15
+    },
+    {   "id":4,
+        "data":{
+            "audioConfig": {
+              "audioEncoding": "LINEAR16",
+              "pitch": 1,
+              "speakingRate": 0.85
+            },
+            "input": {
+              "text": "Row line also created, Thank you! "
+            },
+            "voice": {
+              "languageCode": "en-IN",
+              "name": "en-IN-Wavenet-B"
+            }
+          },
+        "startingTime": 18
+    }
+    
+]
