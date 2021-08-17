@@ -112,7 +112,6 @@ let playBackSpeed = function (ratio:number):Promise<string>{
               console.log(`stdout: ${stdout}`)
               fs.unlinkSync(`${fileName}`)
               contentJson[objectInd].audioFilename = `${fileName2}`
-              fs.writeFileSync('output.json', JSON.stringify(contentJson, null, 2), 'utf8')
               resolve('Playback speed is increased')
             }
           })
@@ -192,7 +191,7 @@ let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
 
     const oldVideoFile:string = `${MainBigObject.mainObj.videoFilename}.mp4`
     const newVideoFile:string = `video/${date}.mp4`
-
+    MainBigObject.mainObj.videoFilename = newVideoFile
 
     const cliPath:string = `ffmpeg -i bgm.wav -i ${oldVideoFile} -filter_complex \ "[0:a]volume=0.05[a1];[1:a]volume=4[a2];[a1][a2]amerge,pan=stereo|c0<c0+c2|c1<c1+c3[out]" -map 1:v -map "[out]" -c:v copy -c:a aac -shortest ${newVideoFile}`
 
@@ -210,6 +209,7 @@ let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
             if (stdout) {
               console.log(`stdout: ${stdout}`)
               fs.unlinkSync(`${oldVideoFile}`)
+              fs.writeFileSync('output.json', JSON.stringify(MainBigObject.mainObj, null, 2), 'utf8')
               resolve('Video Generated')
             }
         })
