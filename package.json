@@ -19,7 +19,9 @@
   "dependencies": {
     "ts-node": "*",
     "audio-loader": "*",
-    "file-system": "*"
+    "file-system": "*",
+    "@google-cloud/text-to-speech": "^3.2.6",
+    "util.promisify": "*"
 
   }
 }
