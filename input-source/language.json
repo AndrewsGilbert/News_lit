@@ -1,0 +1,22 @@
+{
+    "audioConfig": {
+      "audioEncoding": "LINEAR16",
+      "pitch": 0,
+      "speakingRate": 0.9
+    },
+
+    "language":{
+      "india":{
+        "languageCode": "en-IN",
+        "name": "en-IN-Wavenet-A"
+      },
+      "uk":{
+        "languageCode": "en-GB",
+        "name": "en-GB-Wavenet-C"
+      },
+      "usa":{
+        "languageCode": "en-US",
+        "name": "en-US-Wavenet-F"
+      }
+    }
+}

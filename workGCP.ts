@@ -3,34 +3,38 @@ import { exec } from 'child_process'
 const load = require('audio-loader')
 import textToSpeech from '@google-cloud/text-to-speech'
 import util from 'util'
+import { parse } from 'node-html-parser'
 const client = new textToSpeech.TextToSpeechClient()
 
 
-type ref1 = {
-    text:string
-}
-
-type ref2 = {
+type voice = {
     languageCode:string;
     name:string;
 }
 
-type ref3 = {
+type language = {
+    [property:string]:voice
+}
+
+type audioConfig = {
     audioEncoding:any;
     pitch:number;
     speakingRate:number;
 }
 
-type inputconfig ={
-    audioConfig:ref3;
-    input:ref1;
-    voice:ref2;
+type languageJson = {
+    audioConfig:audioConfig;
+    language:language;
+}
+
+type inputJson = {
+    id:number;
+    text:string;
+    startingTime:number;
 }
 
 type content = {
     id:number;
-    data:inputconfig;
-    startingTime:number;
     audioFilename:string;
     duration:number;
     endingTime:number;
@@ -41,86 +45,147 @@ type main = {
     videoFilename:string;
 }
 
+type output = {
+    [property:string]:main
+}
+
+type outputJsonConfig = {
+    input:Array<inputJson>;
+    output:output;
+}
+
 type crossMain = {
     mainObj:main;
     cliPath:string;
 }
 
+type passObj = {
+    ratio:number;
+    contentDet:content;
+}
 
 let objectInd = 0
-const contents: string = fs.readFileSync('input2.json', 'utf8')
-const contentJson: Array<content> = JSON.parse(contents)
-const date:string = new Date().toString().replace(/[{(+)}]|GMT|0530|India Standard Time| /g, '')
+let languageInd = 0
 
-let genAudio =  function ():Promise<string>{
+let input:Array<inputJson> = []
+let detail:Array<content> = []
 
-    console.log('Audio gen')
+const audioLangConfig: string = fs.readFileSync('input-source/language.json', 'utf8')
 
-    const fileName:string = `audio/index-${contentJson[objectInd].id}-${date}.mp3`
+const audioLangConfigJson:languageJson = JSON.parse(audioLangConfig)
+
+const audioConfigObject:audioConfig = audioLangConfigJson.audioConfig
+
+const languageConfigObject:language = audioLangConfigJson.language
+
+const country:Array<string> = Object.keys(languageConfigObject)
+
+let inputJsonGen = function ():Promise<string>{
 
     let myPromise = new  Promise<string>  (async(resolve, reject)  =>  {
 
-        const request:inputconfig = contentJson[objectInd].data
+        const sourceText: string = fs.readFileSync('input-source/sourceText.txt', 'utf8')
+
+        const root = parse(sourceText)
+
+        const tagCount:number = root.querySelectorAll('tts').length
+
+        for(let i:number = 1; i <= tagCount; i++){
+
+            const data = <inputJson>{}
+
+            data.id = i
+            data.text = root.querySelector(`tts:nth-of-type(${i})`).innerText
+            data.startingTime = Number(root.querySelector(`tts:nth-of-type(${i})`).attrs.t)/1000
+
+            input[i-1] = data
+        }
+        resolve('Input Json Generated')
+    })
+    return myPromise
+}
+
+let genAudio =  function ():Promise<content>{
+
+    console.log('Audio gen')
+
+    let contentDet = <content>{}
+
+    const fileName:string = `video/audio/index-${input[objectInd].id}-${country[languageInd]}.mp3`
+
+    let myPromise = new  Promise<content>  (async(resolve, reject)  =>  {
+
+        const request = {
+            "audioConfig":audioConfigObject,
+            "input":{"text":input[objectInd].text},
+            "voice":languageConfigObject[country[languageInd]]
+        }
 
         const [response]:any = await client.synthesizeSpeech(request)
         
         const writeFile = util.promisify(fs.writeFile)
-        console.log(1136536524514)
    
         await writeFile(`${fileName}`, response.audioContent, 'binary')
   
         console.log('Audio Generated')
-        contentJson[objectInd].audioFilename = `${fileName}`
-        resolve('Audio Generated')
+        contentDet.audioFilename = `${fileName}`
+        contentDet.id = input[objectInd].id
+        resolve(contentDet)
 
     })
     return myPromise
 }
 
-let duration = function():Promise<string>{
+let duration = function(contentDet:content):Promise<content>{
     console.log('duration cap')
 
-    const fileName:string = `${contentJson[objectInd].audioFilename }`
+    const fileName:string = `${contentDet.audioFilename }`
     
-    let myPromise = new Promise<string>((resolve, reject) => {
+    let myPromise = new Promise<content>((resolve, reject) => {
 
         load(fileName).then(function (res: { duration: number }) {
-            contentJson[objectInd].duration = res.duration
-            resolve('Duration Captured')
+            contentDet.duration = res.duration
+            resolve(contentDet)
         })
     })
     return myPromise
 }
 
-let speedCheck = function(){
+let speedCheck = function(contentDet:content){
 
     console.log('speed check')
-    const duration1:number =  contentJson[objectInd].duration
-    const startingTime:number = contentJson[objectInd].startingTime
+    const duration1:number =  contentDet.duration
+    const startingTime:number = input[objectInd].startingTime
     const endingTime = startingTime + duration1 
 
-    if(objectInd < contentJson.length-1 && endingTime >= contentJson[objectInd + 1 ].startingTime ){
+    if(objectInd < input.length-1 && endingTime >= input[objectInd + 1 ].startingTime ){
         console.log('speed over')
-        const ratio:number = endingTime/contentJson[objectInd + 1 ].startingTime
-        playBackSpeed(ratio).then(duration).then(speedCheck)
+        const ratio:number = endingTime/(input[objectInd + 1 ].startingTime - 0.2 )
+        const passingObject = <passObj>{}
+        passingObject.ratio = ratio
+        passingObject.contentDet = contentDet
+        playBackSpeed(passingObject).then(duration).then(speedCheck)
     }
     else{
         console.log('correct speed')
-        contentJson[objectInd].endingTime = endingTime
-        recur()
+        contentDet.endingTime = endingTime
+        recur1(contentDet)
     }
 }
 
-let playBackSpeed = function (ratio:number):Promise<string>{
+let playBackSpeed = function (passingObject:passObj):Promise<content>{
 
     console.log('play back speed adjust')
 
-    const fileName:string = `${contentJson[objectInd].audioFilename }`
-    const fileName2:string = `audio/index-${contentJson[objectInd].id}-${date}.${ratio}.mp3`
+    const ratio = passingObject.ratio
+    const contentDet = passingObject.contentDet
+
+    const fileName:string = `${contentDet.audioFilename }`
+    const fileName2:string = `video/audio/index-${input[objectInd].id}-${country[languageInd]}.${ratio}.mp3`
     console.log(ratio)
     const cliString:string = `ffmpeg -i ${fileName} -filter:a "atempo=${ratio}" -vn ${fileName2}`
 
-    let myPromise = new Promise<string>((resolve, reject) => {
+    let myPromise = new Promise<content>((resolve, reject) => {
 
         exec(`${cliString}`, (error, stderr, stdout) => {
             if (error) {
@@ -134,35 +199,35 @@ let playBackSpeed = function (ratio:number):Promise<string>{
             if (stdout) {
               console.log(`stdout: ${stdout}`)
               fs.unlinkSync(`${fileName}`)
-              contentJson[objectInd].audioFilename = `${fileName2}`
-              resolve('Playback speed is increased')
+              contentDet.audioFilename = `${fileName2}`
+              resolve(contentDet)
             }
           })
     })
     return myPromise
 }
 
-let recur = function(){
+let recur1 = function(contentDet:content){
     console.log('recur')
-    if(objectInd < contentJson.length-1){
+    detail[objectInd] = contentDet
+    if(objectInd < input.length-1){
         objectInd++
         genAudio().then(duration).then(speedCheck)
     }
     else{
         let mainJson = <main>{}
-        mainJson.detail = contentJson
-        mainJson.videoFilename = `video/${date}.old`
-        fs.writeFileSync('output2.json', JSON.stringify(mainJson, null, 2), 'utf8')
-        cliPathGenVideoAudio().then(videoGen).then(backroundMusic)
+        mainJson.detail = detail
+        mainJson.videoFilename = `video/output-video/${country[languageInd]}.old`
+
+        cliPathGenVideoAudio(mainJson).then(videoGen).then(backroundMusic).then(recur2)
     }
 }
 
-let cliPathGenVideoAudio = function ():Promise<crossMain>{
+let cliPathGenVideoAudio = function (Json:main):Promise<crossMain>{
 
-    const contents: string = fs.readFileSync('output2.json', 'utf8')
-    const mainJson: main = JSON.parse(contents)
-    const contentJson: Array<content> = mainJson.detail
-    const videoFilename:string = `${mainJson.videoFilename}.mp4`
+
+    const detail: Array<content> = Json.detail
+    const videoFilename:string = `${Json.videoFilename}.mp4`
 
     const myPromise = new Promise<crossMain>((resolve, reject) => {
 
@@ -170,16 +235,16 @@ let cliPathGenVideoAudio = function ():Promise<crossMain>{
         let second:string = ''
         let third:string =''
 
-        for (let i:number = 0; i < contentJson.length; i++){
+        for (let i:number = 0; i < detail.length; i++){
 
-            first += ` -i ${contentJson[i].audioFilename}`
-            second += `[${i+1}]adelay=delays=${contentJson[i].startingTime}s:all=1[r${i+1}]; `
+            first += ` -i ${detail[i].audioFilename}`
+            second += `[${i+1}]adelay=delays=${input[i].startingTime}s:all=1[r${i+1}]; `
             third += `[r${i+1}]`
         }
-        const cliPath:string = `ffmpeg -y -i video.mp4${first} -filter_complex "${second}${third}amix=inputs=${contentJson.length}[a]"  -map 0:v -map "[a]" -codec:v copy ${videoFilename}`
+        const cliPath:string = `ffmpeg -y -i video/SourceVideo.mp4${first} -filter_complex "${second}${third}amix=inputs=${detail.length}[a]"  -map 0:v -map "[a]" -codec:v copy ${videoFilename}`
         console.log(cliPath)
         const MainBigObject = <crossMain>{}
-        MainBigObject.mainObj = mainJson
+        MainBigObject.mainObj = Json
         MainBigObject.cliPath = cliPath
         resolve(MainBigObject)
     })
@@ -213,12 +278,27 @@ let videoGen = function (MainBigObject:crossMain):Promise<crossMain>{
 let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
 
     const oldVideoFile:string = `${MainBigObject.mainObj.videoFilename}.mp4`
-    const newVideoFile:string = `video/${date}.mp4`
+    const newVideoFile:string = `video/output-video/${country[languageInd]}.mp4`
     MainBigObject.mainObj.videoFilename = newVideoFile
 
-    //const cliPath:string = `ffmpeg -i bgm.wav -i ${oldVideoFile} -filter_complex \ "[0:a]volume=0.05[a1];[1:a]volume=4[a2];[a1][a2]amerge,pan=stereo|c0<c0+c2|c1<c1+c3[out]" -map 1:v -map "[out]" -c:v copy -c:a aac -shortest ${newVideoFile}`
+    const countryName:string = country[languageInd]
 
-    const cliPath:string = `ffmpeg -i ${oldVideoFile} -i bgm1.mp3 -filter_complex "[0:a]volume=10,apad[A];[1:a][A]amerge[out]" -c:v copy -map 0:v -map [out] -y -shortest ${newVideoFile}`
+    let outputJson = <outputJsonConfig>{}
+
+
+    if (languageInd === 0) {
+        outputJson.input = input
+        let outputCountry = <output>{}
+        outputCountry[countryName] = MainBigObject.mainObj
+        outputJson.output = outputCountry
+    }
+    else{
+        const outputJsonString: string = fs.readFileSync('json-output/output.json', 'utf8')
+        outputJson = JSON.parse(outputJsonString)
+        outputJson.output[countryName] = MainBigObject.mainObj
+    }
+
+    const cliPath:string = `ffmpeg -i ${oldVideoFile} -i video/bgm1.mp3 -filter_complex "[0:a]volume=10,apad[A];[1:a][A]amerge[out]" -c:v copy -map 0:v -map [out] -y -shortest ${newVideoFile}`
 
     const myPromise = new Promise<string>((resolve, reject) => {
 
@@ -234,7 +314,7 @@ let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
             if (stdout) {
               console.log(`stdout: ${stdout}`)
               fs.unlinkSync(`${oldVideoFile}`)
-              fs.writeFileSync('output2.json', JSON.stringify(MainBigObject.mainObj, null, 2), 'utf8')
+              fs.writeFileSync('json-output/output.json', JSON.stringify(outputJson, null, 2), 'utf8')
               resolve('Video Generated')
             }
         })
@@ -242,12 +322,22 @@ let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
     return myPromise
 }
 
+let recur2 = function (){
 
+    if(languageInd < country.length-1){
+        languageInd++
+        objectInd = 0
+        genAudio().then(duration).then(speedCheck)
+    }
+}
 
-genAudio().then(duration).then(speedCheck)
+inputJsonGen().then(genAudio).then(duration).then(speedCheck)
+
 
 
 // export GOOGLE_APPLICATION_CREDENTIALS="/home/androws/Documents/Zoho/Video_Search/audio-from-text.json"
+
+//const cliPath:string = `ffmpeg -i bgm.wav -i ${oldVideoFile} -filter_complex \ "[0:a]volume=0.05[a1];[1:a]volume=4[a2];[a1][a2]amerge,pan=stereo|c0<c0+c2|c1<c1+c3[out]" -map 1:v -map "[out]" -c:v copy -c:a aac -shortest ${newVideoFile}`
 
 // ffmpeg -i bgmOrg.mp3 -af 'volume=0.1' bgm1.mp3
 
