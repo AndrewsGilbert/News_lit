@@ -17,11 +17,11 @@
   },
   "homepage": "https://github.com/AndrewsGilbert/Video-Search#readme",
   "dependencies": {
-    "ts-node": "*",
+    "@google-cloud/text-to-speech": "^3.2.6",
     "audio-loader": "*",
     "file-system": "*",
-    "@google-cloud/text-to-speech": "^3.2.6",
+    "node-html-parser": "^4.1.3",
+    "ts-node": "*",
     "util.promisify": "*"
-
   }
 }
