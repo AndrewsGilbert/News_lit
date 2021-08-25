@@ -4,6 +4,7 @@ const load = require('audio-loader')
 import textToSpeech from '@google-cloud/text-to-speech'
 import util from 'util'
 import { parse } from 'node-html-parser'
+const subsrt = require('subsrt')
 const client = new textToSpeech.TextToSpeechClient()
 
 
@@ -64,8 +65,32 @@ type passObj = {
     contentDet:content;
 }
 
-let objectInd = 0
-let languageInd = 0
+type subtitleConfig = {
+    start:number;
+    end:number;
+    text:string;
+}
+
+const subJson:Array<subtitleConfig> = []
+
+let i:number = 0
+let j:number = 1
+
+let startTime:number = 0
+
+let startingInd:number = 0
+let endingInd:number = 0
+
+let partOfSentence:number = 1
+let stringCountPerSentence:number = 0
+let durationPerSentence:number = 0
+
+let nText:string = ''
+let stringLen:number = 0
+let outputDetail:Array<content> = []
+
+let objectInd:number = 0
+let languageInd:number = 0
 
 let input:Array<inputJson> = []
 let detail:Array<content> = []
@@ -313,6 +338,7 @@ let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
             }
             if (stdout) {
               console.log(`stdout: ${stdout}`)
+              outputDetail = outputJson.output.india.detail
               fs.unlinkSync(`${oldVideoFile}`)
               fs.writeFileSync('json-output/output.json', JSON.stringify(outputJson, null, 2), 'utf8')
               resolve('Video Generated')
@@ -329,6 +355,61 @@ let recur2 = function (){
         objectInd = 0
         genAudio().then(duration).then(speedCheck)
     }
+    else{
+        first()
+    }
+}
+
+function first () {
+  nText = input[i].text
+  startTime = input[i].startingTime
+  const duration = outputDetail[i].duration
+  stringLen = nText.length
+  if (stringLen >= 100) { trimText(duration) } else { subJsonGen(nText, duration) }
+}
+
+function trimText (duration:number) {
+  partOfSentence = Math.ceil(stringLen / 100)
+  stringCountPerSentence = Math.ceil(stringLen / partOfSentence)
+  durationPerSentence = duration / partOfSentence
+  endingInd = stringCountPerSentence
+  slice()
+}
+
+function subJsonGen (newsSentence:string, duration:number) {
+  const data = <subtitleConfig>{}
+  data.start = (startTime * 1000)
+  data.end = Math.round((startTime + duration - 0.2) * 1000)
+  data.text = newsSentence
+  subJson.push(data)
+  startTime = startTime + durationPerSentence
+  if (partOfSentence > j) { j++; slice() } else if (i < input.length - 1) { i++; first() }
+  else {
+    subtitle()
+    console.log(subJson)
+  }
+}
+
+function slice () {
+  if (nText[endingInd] === '') {
+    const text = nText.slice(startingInd, endingInd)
+    startingInd = endingInd
+    if (j === partOfSentence - 1) { endingInd = stringLen } else { endingInd = startingInd + stringCountPerSentence }
+    startingInd++
+    subJsonGen(text, durationPerSentence)
+  } else {
+    const index = nText.indexOf('', endingInd)
+    const text = nText.slice(startingInd, index)
+    startingInd = endingInd
+    if (j === partOfSentence - 1) { endingInd = stringLen } else { endingInd = startingInd + stringCountPerSentence }
+    subJsonGen(text, durationPerSentence)
+  }
+}
+
+function subtitle () {
+  const options = { format: 'srt' }
+  const content = subsrt.build(subJson, options)
+  fs.writeFileSync('json-output/generated.srt', content)
 }
 
 inputJsonGen().then(genAudio).then(duration).then(speedCheck)

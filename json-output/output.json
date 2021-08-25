@@ -2,13 +2,13 @@
   "input": [
     {
       "id": 1,
-      "text": "Grid is latest CSS web development tool",
+      "text": "Let us see how a grid layout can be created in Pali App Studio.",
       "startingTime": 1
     },
     {
       "id": 2,
-      "text": "This Module offers a grid-based layout system, with rows and columns, making it easier to design web pages without having to use floats and positioning",
-      "startingTime": 4
+      "text": "This offers a grid-based layout system, with rows and columns, making it easier to design web pages without having to use floats and positioning",
+      "startingTime": 6
     },
     {
       "id": 3,
@@ -18,23 +18,23 @@
     {
       "id": 4,
       "text": "Row line also created. Thank you! ",
-      "startingTime": 18
+      "startingTime": 17
     }
   ],
   "output": {
     "india": {
       "detail": [
         {
-          "audioFilename": "video/audio/index-1-india.1.1257894736842107.mp3",
+          "audioFilename": "video/audio/index-1-india.mp3",
           "id": 1,
-          "duration": 2.952,
-          "endingTime": 3.952
+          "duration": 4.632833333333333,
+          "endingTime": 5.632833333333333
         },
         {
-          "audioFilename": "video/audio/index-2-india.mp3",
+          "audioFilename": "video/audio/index-2-india.1.0248648648648648.mp3",
           "id": 2,
-          "duration": 10.238458333333334,
-          "endingTime": 14.238458333333334
+          "duration": 8.928,
+          "endingTime": 14.928
         },
         {
           "audioFilename": "video/audio/index-3-india.mp3",
@@ -46,7 +46,7 @@
           "audioFilename": "video/audio/index-4-india.mp3",
           "id": 4,
           "duration": 2.8724583333333333,
-          "endingTime": 20.872458333333334
+          "endingTime": 19.872458333333334
         }
       ],
       "videoFilename": "video/output-video/india.mp4"
@@ -54,16 +54,16 @@
     "uk": {
       "detail": [
         {
-          "audioFilename": "video/audio/index-1-uk.1.0589473684210526.mp3",
+          "audioFilename": "video/audio/index-1-uk.1.0670905172413794.mp3",
           "id": 1,
-          "duration": 2.832,
-          "endingTime": 3.832
+          "duration": 4.896,
+          "endingTime": 5.896
         },
         {
-          "audioFilename": "video/audio/index-2-uk.mp3",
+          "audioFilename": "video/audio/index-2-uk.1.0329729729729729.mp3",
           "id": 2,
-          "duration": 10.472833333333334,
-          "endingTime": 14.472833333333334
+          "duration": 8.976,
+          "endingTime": 14.976
         },
         {
           "audioFilename": "video/audio/index-3-uk.mp3",
@@ -75,7 +75,7 @@
           "audioFilename": "video/audio/index-4-uk.mp3",
           "id": 4,
           "duration": 3.1998333333333333,
-          "endingTime": 21.199833333333334
+          "endingTime": 20.199833333333334
         }
       ],
       "videoFilename": "video/output-video/uk.mp4"
@@ -83,16 +83,16 @@
     "usa": {
       "detail": [
         {
-          "audioFilename": "video/audio/index-1-usa.1.0589473684210526.mp3",
+          "audioFilename": "video/audio/index-1-usa.mp3",
           "id": 1,
-          "duration": 2.832,
-          "endingTime": 3.832
+          "duration": 4.775375,
+          "endingTime": 5.775375
         },
         {
-          "audioFilename": "video/audio/index-2-usa.mp3",
+          "audioFilename": "video/audio/index-2-usa.1.0264864864864864.mp3",
           "id": 2,
-          "duration": 10.23575,
-          "endingTime": 14.23575
+          "duration": 8.928,
+          "endingTime": 14.928
         },
         {
           "audioFilename": "video/audio/index-3-usa.mp3",
@@ -104,7 +104,7 @@
           "audioFilename": "video/audio/index-4-usa.mp3",
           "id": 4,
           "duration": 2.9055,
-          "endingTime": 20.9055
+          "endingTime": 19.9055
         }
       ],
       "videoFilename": "video/output-video/usa.mp4"
