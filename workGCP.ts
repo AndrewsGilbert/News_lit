@@ -1,8 +1,8 @@
-import fs from 'fs'
+import * as fs from 'fs'
 import { exec } from 'child_process'
 const load = require('audio-loader')
 import textToSpeech from '@google-cloud/text-to-speech'
-import util from 'util'
+import * as util from 'util'
 import { parse } from 'node-html-parser'
 const subsrt = require('subsrt')
 const client = new textToSpeech.TextToSpeechClient()
@@ -73,8 +73,8 @@ type subtitleConfig = {
 
 const subJson:Array<subtitleConfig> = []
 
-let i:number = 0
-let j:number = 1
+let indexOfInputText:number = 0  
+let indexOfSlicedText:number = 1 
 
 let startTime:number = 0
 
@@ -151,7 +151,7 @@ let genAudio =  function ():Promise<content>{
         const writeFile = util.promisify(fs.writeFile)
    
         await writeFile(`${fileName}`, response.audioContent, 'binary')
-  
+
         console.log('Audio Generated')
         contentDet.audioFilename = `${fileName}`
         contentDet.id = input[objectInd].id
@@ -268,6 +268,7 @@ let cliPathGenVideoAudio = function (Json:main):Promise<crossMain>{
         }
         const cliPath:string = `ffmpeg -y -i video/SourceVideo.mp4${first} -filter_complex "${second}${third}amix=inputs=${detail.length}[a]"  -map 0:v -map "[a]" -codec:v copy ${videoFilename}`
         console.log(cliPath)
+        console.log(1)
         const MainBigObject = <crossMain>{}
         MainBigObject.mainObj = Json
         MainBigObject.cliPath = cliPath
@@ -277,6 +278,7 @@ let cliPathGenVideoAudio = function (Json:main):Promise<crossMain>{
 }
 
 let videoGen = function (MainBigObject:crossMain):Promise<crossMain>{
+    console.log(2)
 
     const cliPath:string = MainBigObject.cliPath
 
@@ -302,6 +304,7 @@ let videoGen = function (MainBigObject:crossMain):Promise<crossMain>{
 
 let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
 
+    console.log(3)
     const oldVideoFile:string = `${MainBigObject.mainObj.videoFilename}.mp4`
     const newVideoFile:string = `video/output-video/${country[languageInd]}.mp4`
     MainBigObject.mainObj.videoFilename = newVideoFile
@@ -356,14 +359,14 @@ let recur2 = function (){
         genAudio().then(duration).then(speedCheck)
     }
     else{
-        first()
+        firstSubtitleGen()
     }
 }
 
-function first () {
-  nText = input[i].text
-  startTime = input[i].startingTime
-  const duration = outputDetail[i].duration
+function firstSubtitleGen () {
+  nText = input[indexOfInputText].text
+  startTime = input[indexOfInputText].startingTime
+  const duration = outputDetail[indexOfInputText].duration
   stringLen = nText.length
   if (stringLen >= 100) { trimText(duration) } else { subJsonGen(nText, duration) }
 }
@@ -373,7 +376,7 @@ function trimText (duration:number) {
   stringCountPerSentence = Math.ceil(stringLen / partOfSentence)
   durationPerSentence = duration / partOfSentence
   endingInd = stringCountPerSentence
-  slice()
+  sliceText()
 }
 
 function subJsonGen (newsSentence:string, duration:number) {
@@ -383,25 +386,25 @@ function subJsonGen (newsSentence:string, duration:number) {
   data.text = newsSentence
   subJson.push(data)
   startTime = startTime + durationPerSentence
-  if (partOfSentence > j) { j++; slice() } else if (i < input.length - 1) { i++; first() }
+  if (partOfSentence > indexOfSlicedText) { indexOfSlicedText++; sliceText() } else if (indexOfInputText < input.length - 1) { indexOfInputText++; firstSubtitleGen() }
   else {
     subtitle()
     console.log(subJson)
   }
 }
 
-function slice () {
+function sliceText () {
   if (nText[endingInd] === '') {
     const text = nText.slice(startingInd, endingInd)
     startingInd = endingInd
-    if (j === partOfSentence - 1) { endingInd = stringLen } else { endingInd = startingInd + stringCountPerSentence }
+    if (indexOfSlicedText === partOfSentence - 1) { endingInd = stringLen } else { endingInd = startingInd + stringCountPerSentence }
     startingInd++
     subJsonGen(text, durationPerSentence)
   } else {
     const index = nText.indexOf('', endingInd)
     const text = nText.slice(startingInd, index)
     startingInd = endingInd
-    if (j === partOfSentence - 1) { endingInd = stringLen } else { endingInd = startingInd + stringCountPerSentence }
+    if (indexOfSlicedText === partOfSentence - 1) { endingInd = stringLen } else { endingInd = startingInd + stringCountPerSentence }
     subJsonGen(text, durationPerSentence)
   }
 }
@@ -416,13 +419,17 @@ inputJsonGen().then(genAudio).then(duration).then(speedCheck)
 
 
 
-// export GOOGLE_APPLICATION_CREDENTIALS="/home/androws/Documents/Zoho/Video_Search/audio-from-text.json"
+// export GOOGLE_APPLICATION_CREDENTIALS="/home/andrews-zt589/Documents/Zoho/Video_Search/audio-from-text.json"
 
 //const cliPath:string = `ffmpeg -i bgm.wav -i ${oldVideoFile} -filter_complex \ "[0:a]volume=0.05[a1];[1:a]volume=4[a2];[a1][a2]amerge,pan=stereo|c0<c0+c2|c1<c1+c3[out]" -map 1:v -map "[out]" -c:v copy -c:a aac -shortest ${newVideoFile}`
 
 // ffmpeg -i bgmOrg.mp3 -af 'volume=0.1' bgm1.mp3
 
 // ffmpeg -i test.mp4 -i bgm1.mp3 -filter_complex "[0:a]volume=10,apad[A];[1:a][A]amerge[out]" -c:v copy -map 0:v -map [out] -y -shortest output-final.mp4
+
+
+
+// ffmpeg -y -i video/SourceVideo.mp4 -i video/audio/index-1-india.mp3 -i video/audio/index-2-india.1.0248648648648648.mp3 -i video/audio/index-3-india.mp3 -i video/audio/index-4-india.mp3 -filter_complex "[1]adelay=delays=1s:all=1[r1]; [2]adelay=delays=6s:all=1[r2]; [3]adelay=delays=15s:all=1[r3]; [4]adelay=delays=17s:all=1[r4]; [r1][r2][r3][r4]amix=inputs=4[a]"  -map 0:v -map "[a]" -codec:v copy video/output-video/india.old.mp4 
 
 
 
