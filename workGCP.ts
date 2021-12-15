@@ -105,7 +105,27 @@ const languageConfigObject:language = audioLangConfigJson.language
 
 const country:Array<string> = Object.keys(languageConfigObject)
 
+function folderCreation(){
+    exec("mkdir video/audio video/output-video", (error, stderr, stdout) => {
+        if (error) {
+          console.log(`error: ${error.message}`)
+          return error
+        }
+        if (stderr) {
+          console.log(`stderr: ${stderr}`)
+          return stderr
+        }
+        if (stdout) {
+          console.log(`stdout: ${stdout}`)
+          return stdout
+        }
+    })
+}
+
+
 let inputJsonGen = function ():Promise<string>{
+
+    folderCreation()
 
     let myPromise = new  Promise<string>  (async(resolve, reject)  =>  {
 
