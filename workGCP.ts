@@ -419,7 +419,7 @@ inputJsonGen().then(genAudio).then(duration).then(speedCheck)
 
 
 
-// export GOOGLE_APPLICATION_CREDENTIALS="/home/andrews-zt589/Documents/Zoho/Video_Search/audio-from-text.json"
+// export GOOGLE_APPLICATION_CREDENTIALS="/home/andrews-zt589/Documents/Zoho/excercise_task/Video_Search/audio-from-text.json"
 
 //const cliPath:string = `ffmpeg -i bgm.wav -i ${oldVideoFile} -filter_complex \ "[0:a]volume=0.05[a1];[1:a]volume=4[a2];[a1][a2]amerge,pan=stereo|c0<c0+c2|c1<c1+c3[out]" -map 1:v -map "[out]" -c:v copy -c:a aac -shortest ${newVideoFile}`
 
