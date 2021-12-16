@@ -406,7 +406,7 @@ function subJsonGen (newsSentence:string, duration:number) {
   data.text = newsSentence
   subJson.push(data)
   startTime = startTime + durationPerSentence
-  if (partOfSentence > indexOfSlicedText) { indexOfSlicedText++; sliceText() } else if (indexOfInputText < input.length - 1) { indexOfInputText++; firstSubtitleGen() }
+  if (partOfSentence > indexOfSlicedText) { indexOfSlicedText++; sliceText() } else if (indexOfInputText < input.length - 1) { indexOfInputText++; indexOfSlicedText=1; startingInd=0; firstSubtitleGen() }
   else {
     subtitle()
     console.log(subJson)
@@ -414,15 +414,16 @@ function subJsonGen (newsSentence:string, duration:number) {
 }
 
 function sliceText () {
-  if (nText[endingInd] === '') {
+  if (nText[endingInd] === ' ') {
     const text = nText.slice(startingInd, endingInd)
     startingInd = endingInd
     if (indexOfSlicedText === partOfSentence - 1) { endingInd = stringLen } else { endingInd = startingInd + stringCountPerSentence }
     startingInd++
     subJsonGen(text, durationPerSentence)
   } else {
-    const index = nText.indexOf('', endingInd)
+    const index = nText.indexOf(' ', endingInd)
     const text = nText.slice(startingInd, index)
+    endingInd = index
     startingInd = endingInd
     if (indexOfSlicedText === partOfSentence - 1) { endingInd = stringLen } else { endingInd = startingInd + stringCountPerSentence }
     subJsonGen(text, durationPerSentence)
@@ -439,7 +440,7 @@ inputJsonGen().then(genAudio).then(duration).then(speedCheck)
 
 
 
-// export GOOGLE_APPLICATION_CREDENTIALS="/home/andrews-zt589/Documents/Zoho/excercise_task/Video_Search/audio-from-text.json"
+// export GOOGLE_APPLICATION_CREDENTIALS="/home/andrews-zt589/Documents/Zoho/excercise_task/Video_Search-test/audio-from-text.json"
 
 //const cliPath:string = `ffmpeg -i bgm.wav -i ${oldVideoFile} -filter_complex \ "[0:a]volume=0.05[a1];[1:a]volume=4[a2];[a1][a2]amerge,pan=stereo|c0<c0+c2|c1<c1+c3[out]" -map 1:v -map "[out]" -c:v copy -c:a aac -shortest ${newVideoFile}`
 
