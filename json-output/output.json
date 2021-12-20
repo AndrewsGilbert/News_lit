@@ -25,25 +25,25 @@
     "india": {
       "detail": [
         {
-          "audioFilename": "video/audio/index-1-india.mp3",
+          "audioFilename": "video/gcp-audio/index-1-india.mp3",
           "id": 1,
           "duration": 4.632833333333333,
           "endingTime": 5.632833333333333
         },
         {
-          "audioFilename": "video/audio/index-2-india.1.0248648648648648.mp3",
+          "audioFilename": "video/compressed-audio/index-2-india.1.0248648648648648.mp3",
           "id": 2,
           "duration": 8.928,
           "endingTime": 14.928
         },
         {
-          "audioFilename": "video/audio/index-3-india.mp3",
+          "audioFilename": "video/gcp-audio/index-3-india.mp3",
           "id": 3,
           "duration": 1.627125,
           "endingTime": 16.627125
         },
         {
-          "audioFilename": "video/audio/index-4-india.mp3",
+          "audioFilename": "video/gcp-audio/index-4-india.mp3",
           "id": 4,
           "duration": 2.8724583333333333,
           "endingTime": 19.872458333333334
@@ -54,25 +54,25 @@
     "uk": {
       "detail": [
         {
-          "audioFilename": "video/audio/index-1-uk.1.0670905172413794.mp3",
+          "audioFilename": "video/compressed-audio/index-1-uk.1.0670905172413794.mp3",
           "id": 1,
           "duration": 4.896,
           "endingTime": 5.896
         },
         {
-          "audioFilename": "video/audio/index-2-uk.1.0329729729729729.mp3",
+          "audioFilename": "video/compressed-audio/index-2-uk.1.0329729729729729.mp3",
           "id": 2,
           "duration": 8.976,
           "endingTime": 14.976
         },
         {
-          "audioFilename": "video/audio/index-3-uk.mp3",
+          "audioFilename": "video/gcp-audio/index-3-uk.mp3",
           "id": 3,
           "duration": 1.79475,
           "endingTime": 16.79475
         },
         {
-          "audioFilename": "video/audio/index-4-uk.mp3",
+          "audioFilename": "video/gcp-audio/index-4-uk.mp3",
           "id": 4,
           "duration": 3.1998333333333333,
           "endingTime": 20.199833333333334
@@ -83,25 +83,25 @@
     "usa": {
       "detail": [
         {
-          "audioFilename": "video/audio/index-1-usa.mp3",
+          "audioFilename": "video/gcp-audio/index-1-usa.mp3",
           "id": 1,
           "duration": 4.775375,
           "endingTime": 5.775375
         },
         {
-          "audioFilename": "video/audio/index-2-usa.1.0264864864864864.mp3",
+          "audioFilename": "video/compressed-audio/index-2-usa.1.0264864864864864.mp3",
           "id": 2,
           "duration": 8.928,
           "endingTime": 14.928
         },
         {
-          "audioFilename": "video/audio/index-3-usa.mp3",
+          "audioFilename": "video/gcp-audio/index-3-usa.mp3",
           "id": 3,
           "duration": 1.7549166666666667,
           "endingTime": 16.754916666666666
         },
         {
-          "audioFilename": "video/audio/index-4-usa.mp3",
+          "audioFilename": "video/gcp-audio/index-4-usa.mp3",
           "id": 4,
           "duration": 2.9055,
           "endingTime": 19.9055

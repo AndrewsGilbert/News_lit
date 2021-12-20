@@ -8,13 +8,21 @@ This offers a grid-based layout system, with rows and columns, making it
 
 3
 00:00:10,464 --> 00:00:14,728
- easier to design web pages without having to use floats and positioning
+easier to design web pages without having to use floats and positioning
 
 4
-00:00:15,000 --> 00:00:16,427
+00:00:15,000 --> 00:00:15,614
 Created column line
 
 5
-00:00:17,000 --> 00:00:19,672
+00:00:15,813 --> 00:00:16,427
+
+
+6
+00:00:17,000 --> 00:00:18,236
 Row line also created. Thank you! 
+
+7
+00:00:18,436 --> 00:00:19,672
+
 
