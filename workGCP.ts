@@ -95,6 +95,10 @@ let languageInd:number = 0
 let input:Array<inputJson> = []
 let detail:Array<content> = []
 
+let audioFiles:Array<string> = []
+
+
+
 const audioLangConfig: string = fs.readFileSync('input-source/language.json', 'utf8')
 
 const audioLangConfigJson:languageJson = JSON.parse(audioLangConfig)
@@ -105,31 +109,45 @@ const languageConfigObject:language = audioLangConfigJson.language
 
 const country:Array<string> = Object.keys(languageConfigObject)
 
-function folderCreation(){
-    exec("mkdir video/audio video/output-video", (error, stderr, stdout) => {
-        if (error) {
-          console.log(`error: ${error.message}`)
-          return error
-        }
-        if (stderr) {
-          console.log(`stderr: ${stderr}`)
-          return stderr
-        }
-        if (stdout) {
-          console.log(`stdout: ${stdout}`)
-          return stdout
-        }
+
+let folderCreation  = function ():Promise<string>{
+
+
+  const dirNames =  fs.readdirSync('video')
+
+  if(dirNames.includes('video/compressed-audio')){
+
+    fs.rmSync('video/compressed-audio', { recursive: true })
+  }
+  
+  const myPromise = new Promise<string>((resolve, reject) => {
+    exec("mkdir video/gcp-audio video/compressed-audio video/output-video", (error, stderr, stdout) => {
+      if (error) {
+        console.log(`error: ${error.message}`)
+        resolve('error')
+      }
+      if (stderr) {
+        console.log(`stderr: ${stderr}`)
+        resolve('stderr')
+      }
+      if (stdout) {
+        console.log(`stdout: ${stdout}`)
+        resolve('stdout')
+      }
     })
+
+  })
+  return myPromise
 }
 
 
 let inputJsonGen = function ():Promise<string>{
-
-    folderCreation()
-
+    console.log('ip')
     let myPromise = new  Promise<string>  (async(resolve, reject)  =>  {
 
         const sourceText: string = fs.readFileSync('input-source/sourceText.txt', 'utf8')
+
+        audioFiles =  fs.readdirSync('video/gcp-audio')
 
         const root = parse(sourceText)
 
@@ -144,6 +162,9 @@ let inputJsonGen = function ():Promise<string>{
             data.startingTime = Number(root.querySelector(`tts:nth-of-type(${i})`).attrs.t)/1000
 
             input[i-1] = data
+            if(data.text.length >= 5000){
+                reject(`${i}th tag exceed the charecter limit,The request should be in 5000 charecter maximum`)
+            }
         }
         resolve('Input Json Generated')
     })
@@ -156,23 +177,25 @@ let genAudio =  function ():Promise<content>{
 
     let contentDet = <content>{}
 
-    const fileName:string = `video/audio/index-${input[objectInd].id}-${country[languageInd]}.mp3`
+    const fileName:string = `video/gcp-audio/index-${input[objectInd].id}-${country[languageInd]}.mp3`
 
     let myPromise = new  Promise<content>  (async(resolve, reject)  =>  {
 
-        const request = {
-            "audioConfig":audioConfigObject,
-            "input":{"text":input[objectInd].text},
-            "voice":languageConfigObject[country[languageInd]]
+        if(!audioFiles.includes(fileName)){
+            const request = {
+                "audioConfig":audioConfigObject,
+                "input":{"text":input[objectInd].text},
+                "voice":languageConfigObject[country[languageInd]]
+            }
+
+            const [response]:any = await client.synthesizeSpeech(request)
+            
+            const writeFile = util.promisify(fs.writeFile)
+    
+            await writeFile(`${fileName}`, response.audioContent, 'binary')
+
+            console.log('Audio Generated')
         }
-
-        const [response]:any = await client.synthesizeSpeech(request)
-        
-        const writeFile = util.promisify(fs.writeFile)
-   
-        await writeFile(`${fileName}`, response.audioContent, 'binary')
-
-        console.log('Audio Generated')
         contentDet.audioFilename = `${fileName}`
         contentDet.id = input[objectInd].id
         resolve(contentDet)
@@ -226,7 +249,7 @@ let playBackSpeed = function (passingObject:passObj):Promise<content>{
     const contentDet = passingObject.contentDet
 
     const fileName:string = `${contentDet.audioFilename }`
-    const fileName2:string = `video/audio/index-${input[objectInd].id}-${country[languageInd]}.${ratio}.mp3`
+    const fileName2:string = `video/compressed-audio/index-${input[objectInd].id}-${country[languageInd]}.${ratio}.mp3`
     console.log(ratio)
     const cliString:string = `ffmpeg -i ${fileName} -filter:a "atempo=${ratio}" -vn ${fileName2}`
 
@@ -243,7 +266,9 @@ let playBackSpeed = function (passingObject:passObj):Promise<content>{
             }
             if (stdout) {
               console.log(`stdout: ${stdout}`)
-              fs.unlinkSync(`${fileName}`)
+              if(fileName.includes('compressed-audio')){
+                fs.unlinkSync(`${fileName}`)
+              }
               contentDet.audioFilename = `${fileName2}`
               resolve(contentDet)
             }
@@ -388,12 +413,16 @@ function firstSubtitleGen () {
   startTime = input[indexOfInputText].startingTime
   const duration = outputDetail[indexOfInputText].duration
   stringLen = nText.length
-  if (stringLen >= 100) { trimText(duration) } else { subJsonGen(nText, duration) }
+  trimText(duration)
 }
 
 function trimText (duration:number) {
+  if (stringLen >= 100){
   partOfSentence = Math.ceil(stringLen / 100)
   stringCountPerSentence = Math.ceil(stringLen / partOfSentence)
+  }else{
+    stringCountPerSentence = stringLen
+  }
   durationPerSentence = duration / partOfSentence
   endingInd = stringCountPerSentence
   sliceText()
@@ -415,14 +444,18 @@ function subJsonGen (newsSentence:string, duration:number) {
 
 function sliceText () {
   if (nText[endingInd] === ' ') {
+    console.log(nText,'sp1')
     const text = nText.slice(startingInd, endingInd)
+    console.log(text,'sp2')
     startingInd = endingInd
     if (indexOfSlicedText === partOfSentence - 1) { endingInd = stringLen } else { endingInd = startingInd + stringCountPerSentence }
     startingInd++
     subJsonGen(text, durationPerSentence)
   } else {
-    const index = nText.indexOf(' ', endingInd)
+    const index = nText.indexOf('', endingInd)
+    console.log(nText, 'wos',index)
     const text = nText.slice(startingInd, index)
+    console.log(text, 'wos2')
     endingInd = index
     startingInd = endingInd
     if (indexOfSlicedText === partOfSentence - 1) { endingInd = stringLen } else { endingInd = startingInd + stringCountPerSentence }
@@ -436,7 +469,7 @@ function subtitle () {
   fs.writeFileSync('json-output/generated.srt', content)
 }
 
-inputJsonGen().then(genAudio).then(duration).then(speedCheck)
+folderCreation().then(inputJsonGen).then(genAudio).then(duration).then(speedCheck)
 
 
 
