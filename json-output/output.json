@@ -7,17 +7,17 @@
     },
     {
       "id": 2,
-      "text": "This offers a grid-based layout system, with rows and columns, making it easier to design web pages without having to use floats and positioning",
+      "text": "This offers a grid-based layout system, with rows and columns, making it easier to design web pages without having to use floats and positioning.",
       "startingTime": 6
     },
     {
       "id": 3,
-      "text": "Created column line",
+      "text": "Created column line.",
       "startingTime": 15
     },
     {
       "id": 4,
-      "text": "Row line also created. Thank you! ",
+      "text": "Row line also created. Thank you!",
       "startingTime": 17
     }
   ],
@@ -31,7 +31,7 @@
           "endingTime": 5.632833333333333
         },
         {
-          "audioFilename": "video/compressed-audio/index-2-india.1.0248648648648648.mp3",
+          "audioFilename": "video/compressed-audio/index-2-india.1.0264864864864864.mp3",
           "id": 2,
           "duration": 8.928,
           "endingTime": 14.928
@@ -39,8 +39,8 @@
         {
           "audioFilename": "video/gcp-audio/index-3-india.mp3",
           "id": 3,
-          "duration": 1.627125,
-          "endingTime": 16.627125
+          "duration": 1.6274583333333332,
+          "endingTime": 16.627458333333333
         },
         {
           "audioFilename": "video/gcp-audio/index-4-india.mp3",
@@ -60,7 +60,7 @@
           "endingTime": 5.896
         },
         {
-          "audioFilename": "video/compressed-audio/index-2-uk.1.0329729729729729.mp3",
+          "audioFilename": "video/compressed-audio/index-2-uk.1.0345945945945945.mp3",
           "id": 2,
           "duration": 8.976,
           "endingTime": 14.976
@@ -68,8 +68,8 @@
         {
           "audioFilename": "video/gcp-audio/index-3-uk.mp3",
           "id": 3,
-          "duration": 1.79475,
-          "endingTime": 16.79475
+          "duration": 1.8179583333333333,
+          "endingTime": 16.817958333333333
         },
         {
           "audioFilename": "video/gcp-audio/index-4-uk.mp3",
@@ -89,16 +89,16 @@
           "endingTime": 5.775375
         },
         {
-          "audioFilename": "video/compressed-audio/index-2-usa.1.0264864864864864.mp3",
+          "audioFilename": "video/compressed-audio/index-2-usa.1.028108108108108.mp3",
           "id": 2,
-          "duration": 8.928,
-          "endingTime": 14.928
+          "duration": 8.952,
+          "endingTime": 14.952
         },
         {
           "audioFilename": "video/gcp-audio/index-3-usa.mp3",
           "id": 3,
-          "duration": 1.7549166666666667,
-          "endingTime": 16.754916666666666
+          "duration": 1.762,
+          "endingTime": 16.762
         },
         {
           "audioFilename": "video/gcp-audio/index-4-usa.mp3",

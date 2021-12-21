@@ -110,13 +110,13 @@ const languageConfigObject:language = audioLangConfigJson.language
 const country:Array<string> = Object.keys(languageConfigObject)
 
 
-let folderCreation  = function ():Promise<string>{
+let folderCreation  = function ():Promise<any>{
 
 
   const dirNames =  fs.readdirSync('video')
   console.log(dirNames)
 
-  const myPromise = new Promise<string>((resolve, reject) => {
+  const myPromise = new Promise<any>((resolve, reject) => {
 
   if(dirNames.includes('compressed-audio')){
     console.log('rm')
@@ -145,7 +145,12 @@ let folderCreation  = function ():Promise<string>{
     fs.mkdirSync('video/output-video', { recursive: true })
   }
 
-    resolve ('Done')
+  if(dirNames.includes('bgm1.mp3')){
+    console.log('rm')
+    fs.rmSync('video/bgm1.mp3', { recursive: true })
+  }
+
+    resolve ({cmd:`ffmpeg -i video/bgm.mp3 -af 'volume=0.2' video/bgm1.mp3`,old:'video/bgm.mp3'})
   })
   return myPromise
 }
@@ -312,12 +317,11 @@ let recur1 = function(contentDet:content){
         mainJson.detail = detail
         mainJson.videoFilename = `video/output-video/${country[languageInd]}.old`
 
-        cliPathGenVideoAudio(mainJson).then(videoGen).then(backroundMusic).then(recur2)
+        cliPathGenVideoAudio(mainJson).then(videoGen).then(backroundMusic).then(volumeAdjust).then(recur2)
     }
 }
 
 let cliPathGenVideoAudio = function (Json:main):Promise<crossMain>{
-
 
     const detail: Array<content> = Json.detail
     const videoFilename:string = `${Json.videoFilename}.mp4`
@@ -370,17 +374,41 @@ let videoGen = function (MainBigObject:crossMain):Promise<crossMain>{
     return myPromise
 }
 
-let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
+let volumeAdjust = function(configObj:any):Promise<any>{
+
+  const cliPath = configObj.cmd
+
+  const myPromise = new Promise<any>((resolve, reject) => {
+
+    exec(`${cliPath}`, (error, stderr, stdout) => {
+      if (error) {
+        console.log(`error: ${error.message}`)
+        return
+      }
+      if (stderr) {
+        console.log(`stderr: ${stderr}`)
+        return
+      }
+      if (stdout) {
+        console.log(`stdout: ${stdout}`)
+        resolve(configObj.old)
+      }
+    })
+  })
+  return myPromise
+}
+
+let backroundMusic = function (MainBigObject:crossMain):Promise<any>{
 
     console.log(3)
     const oldVideoFile:string = `${MainBigObject.mainObj.videoFilename}.mp4`
+    const oldVideoFile2:string = `${MainBigObject.mainObj.videoFilename}1.mp4`
     const newVideoFile:string = `video/output-video/${country[languageInd]}.mp4`
     MainBigObject.mainObj.videoFilename = newVideoFile
 
     const countryName:string = country[languageInd]
 
     let outputJson = <outputJsonConfig>{}
-
 
     if (languageInd === 0) {
         outputJson.input = input
@@ -396,9 +424,9 @@ let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
 
     // const cliPath:string = `ffmpeg -i ${oldVideoFile} -i video/bgm1.mp3 -filter_complex "[0:a]volume=10,apad[A];[1:a][A]amerge[out]" -c:v copy -map 0:v -map [out] -y -shortest ${newVideoFile}`
 
-    const cliPath:string = `ffmpeg -i ${oldVideoFile} -filter_complex "amovie=video/bgm1.mp3:loop=0,asetpts=N/SR/TB[aud];[0:a][aud]amix[a]" -map 0:v -map '[a]' -c:v copy -c:a aac -b:a 256k -shortest ${newVideoFile}`
+    const cliPath:string = `ffmpeg -i ${oldVideoFile} -filter_complex "amovie=video/bgm1.mp3:loop=0,asetpts=N/SR/TB[aud];[0:a][aud]amix[a]" -map 0:v -map '[a]' -c:v copy -c:a aac -b:a 256k -shortest ${oldVideoFile2}`
     
-    const myPromise = new Promise<string>((resolve, reject) => {
+    const myPromise = new Promise<any>((resolve, reject) => {
 
         exec(`${cliPath}`, (error, stderr, stdout) => {
             if (error) {
@@ -414,22 +442,25 @@ let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
               outputDetail = outputJson.output.india.detail
               fs.unlinkSync(`${oldVideoFile}`)
               fs.writeFileSync('json-output/output.json', JSON.stringify(outputJson, null, 2), 'utf8')
-              resolve('Video Generated')
+              resolve({cmd:`ffmpeg -i ${oldVideoFile2} -af 'volume=10' -vcodec copy ${newVideoFile}`,old:oldVideoFile2})
             }
         })
     })
     return myPromise
 }
 
-let recur2 = function (){
 
+let recur2 = function (oldVideoFile:any){
+    fs.unlinkSync(`${oldVideoFile}`)
     if(languageInd < country.length-1){
+       
         languageInd++
         objectInd = 0
         genAudio().then(duration).then(speedCheck)
     }
     else{
-        firstSubtitleGen()
+      fs.unlinkSync('video/bgm1.mp3')
+      firstSubtitleGen()
     }
 }
 
@@ -478,7 +509,7 @@ function sliceText () {
     startingInd++
     subJsonGen(text, durationPerSentence)
   } else {
-    const index = nText.indexOf('', endingInd)
+    const index = nText.indexOf(' ', endingInd)
     console.log(nText, 'wos',index)
     const text = nText.slice(startingInd, index)
     console.log(text, 'wos2')
@@ -495,7 +526,7 @@ function subtitle () {
   fs.writeFileSync('json-output/generated.srt', content)
 }
 
-folderCreation().then(inputJsonGen).then(genAudio).then(duration).then(speedCheck)
+folderCreation().then(volumeAdjust).then(inputJsonGen).then(genAudio).then(duration).then(speedCheck)
 
 
 

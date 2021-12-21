@@ -4,19 +4,19 @@ Let us see how a grid layout can
 
 2
 00:00:03,316 --> 00:00:05,433
-be created in Pali App Studio.
+be created in Pali App Studio
 
 3
 00:00:06,000 --> 00:00:08,776
-This offers a grid-based layout system, with row
+This offers a grid-based layout system, with rows
 
 4
 00:00:08,976 --> 00:00:11,752
-s and columns, making it easier to design web pa
+and columns, making it easier to design web pages
 
 5
 00:00:11,952 --> 00:00:14,728
-ges without having to use floats and positioning
+ without having to use floats and positioning
 
 6
 00:00:15,000 --> 00:00:15,342
@@ -32,7 +32,7 @@ Created column line
 
 9
 00:00:17,000 --> 00:00:17,757
-Row line also created. Thank you! 
+Row line also created. Thank you
 
 10
 00:00:17,957 --> 00:00:18,715
