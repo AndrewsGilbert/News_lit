@@ -114,28 +114,38 @@ let folderCreation  = function ():Promise<string>{
 
 
   const dirNames =  fs.readdirSync('video')
+  console.log(dirNames)
 
-  if(dirNames.includes('video/compressed-audio')){
+  const myPromise = new Promise<string>((resolve, reject) => {
 
+  if(dirNames.includes('compressed-audio')){
+    console.log('rm')
     fs.rmSync('video/compressed-audio', { recursive: true })
+    fs.mkdirSync('video/compressed-audio', { recursive: true })
+  }
+
+  if(!dirNames.includes('compressed-audio')){
+    console.log('rm')
+    fs.mkdirSync('video/compressed-audio', { recursive: true })
+  }
+
+  if(!dirNames.includes('gcp-audio')){
+    console.log('rm')
+    fs.mkdirSync('video/gcp-audio', { recursive: true })
+  }
+
+  if(dirNames.includes('output-video')){
+    console.log('rm')
+    fs.rmSync('video/output-video', { recursive: true })
+    fs.mkdirSync('video/output-video', { recursive: true })
   }
   
-  const myPromise = new Promise<string>((resolve, reject) => {
-    exec("mkdir video/gcp-audio video/compressed-audio video/output-video", (error, stderr, stdout) => {
-      if (error) {
-        console.log(`error: ${error.message}`)
-        resolve('error')
-      }
-      if (stderr) {
-        console.log(`stderr: ${stderr}`)
-        resolve('stderr')
-      }
-      if (stdout) {
-        console.log(`stdout: ${stdout}`)
-        resolve('stdout')
-      }
-    })
+  if(!dirNames.includes('output-video')){
+    console.log('rm')
+    fs.mkdirSync('video/output-video', { recursive: true })
+  }
 
+    resolve ('Done')
   })
   return myPromise
 }
@@ -159,7 +169,7 @@ let inputJsonGen = function ():Promise<string>{
 
             data.id = i
             data.text = root.querySelector(`tts:nth-of-type(${i})`).innerText
-            data.startingTime = Number(root.querySelector(`tts:nth-of-type(${i})`).attrs.t)/1000
+            data.startingTime = Math.ceil(Number(root.querySelector(`tts:nth-of-type(${i})`).attrs.t)/1000)
 
             input[i-1] = data
             if(data.text.length >= 5000){
@@ -232,7 +242,20 @@ let speedCheck = function(contentDet:content){
         const passingObject = <passObj>{}
         passingObject.ratio = ratio
         passingObject.contentDet = contentDet
-        playBackSpeed(passingObject).then(duration).then(speedCheck)
+
+        const ratioCheck = parseFloat(ratio.toString().substr(0,5))
+        
+        console.log(ratioCheck,'d',ratio)
+    
+        if(ratioCheck > 1.001){
+          console.log(ratioCheck,'h',ratio)
+          playBackSpeed(passingObject).then(duration).then(speedCheck)
+        }
+        else{
+          console.log('correct speed')
+          contentDet.endingTime = endingTime
+          recur1(contentDet)
+      }
     }
     else{
         console.log('correct speed')
@@ -371,8 +394,10 @@ let backroundMusic = function (MainBigObject:crossMain):Promise<string>{
         outputJson.output[countryName] = MainBigObject.mainObj
     }
 
-    const cliPath:string = `ffmpeg -i ${oldVideoFile} -i video/bgm1.mp3 -filter_complex "[0:a]volume=10,apad[A];[1:a][A]amerge[out]" -c:v copy -map 0:v -map [out] -y -shortest ${newVideoFile}`
+    // const cliPath:string = `ffmpeg -i ${oldVideoFile} -i video/bgm1.mp3 -filter_complex "[0:a]volume=10,apad[A];[1:a][A]amerge[out]" -c:v copy -map 0:v -map [out] -y -shortest ${newVideoFile}`
 
+    const cliPath:string = `ffmpeg -i ${oldVideoFile} -filter_complex "amovie=video/bgm1.mp3:loop=0,asetpts=N/SR/TB[aud];[0:a][aud]amix[a]" -map 0:v -map '[a]' -c:v copy -c:a aac -b:a 256k -shortest ${newVideoFile}`
+    
     const myPromise = new Promise<string>((resolve, reject) => {
 
         exec(`${cliPath}`, (error, stderr, stdout) => {
@@ -409,7 +434,8 @@ let recur2 = function (){
 }
 
 function firstSubtitleGen () {
-  nText = input[indexOfInputText].text
+  nText = input[indexOfInputText].text.split(/\r?\n/).join(' ')
+  console.log(nText)
   startTime = input[indexOfInputText].startingTime
   const duration = outputDetail[indexOfInputText].duration
   stringLen = nText.length
@@ -417,8 +443,8 @@ function firstSubtitleGen () {
 }
 
 function trimText (duration:number) {
-  if (stringLen >= 100){
-  partOfSentence = Math.ceil(stringLen / 100)
+  if (stringLen >= 60){
+  partOfSentence = Math.ceil(stringLen / 60)
   stringCountPerSentence = Math.ceil(stringLen / partOfSentence)
   }else{
     stringCountPerSentence = stringLen
