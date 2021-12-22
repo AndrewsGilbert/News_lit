@@ -150,7 +150,7 @@ let folderCreation  = function ():Promise<any>{
     fs.rmSync('video/bgm1.mp3', { recursive: true })
   }
 
-    resolve ({cmd:`ffmpeg -i video/bgm.mp3 -af 'volume=0.2' video/bgm1.mp3`,old:'video/bgm.mp3'})
+    resolve ({cmd:`ffmpeg -i video/bgm.mp3 -af volume=0.2 video/bgm1.mp3`,old:'video/bgm.mp3'})
   })
   return myPromise
 }
@@ -424,7 +424,7 @@ let backroundMusic = function (MainBigObject:crossMain):Promise<any>{
 
     // const cliPath:string = `ffmpeg -i ${oldVideoFile} -i video/bgm1.mp3 -filter_complex "[0:a]volume=10,apad[A];[1:a][A]amerge[out]" -c:v copy -map 0:v -map [out] -y -shortest ${newVideoFile}`
 
-    const cliPath:string = `ffmpeg -i ${oldVideoFile} -filter_complex "amovie=video/bgm1.mp3:loop=0,asetpts=N/SR/TB[aud];[0:a][aud]amix[a]" -map 0:v -map '[a]' -c:v copy -c:a aac -b:a 256k -shortest ${oldVideoFile2}`
+    const cliPath:string = `ffmpeg -i ${oldVideoFile} -filter_complex "amovie=video/bgm1.mp3:loop=0,asetpts=N/SR/TB[aud];[0:a][aud]amix[a]" -map 0:v -map "[a]" -c:v copy -c:a aac -b:a 256k -shortest ${oldVideoFile2}`
     
     const myPromise = new Promise<any>((resolve, reject) => {
 
@@ -442,7 +442,7 @@ let backroundMusic = function (MainBigObject:crossMain):Promise<any>{
               outputDetail = outputJson.output.india.detail
               fs.unlinkSync(`${oldVideoFile}`)
               fs.writeFileSync('json-output/output.json', JSON.stringify(outputJson, null, 2), 'utf8')
-              resolve({cmd:`ffmpeg -i ${oldVideoFile2} -af 'volume=10' -vcodec copy ${newVideoFile}`,old:oldVideoFile2})
+              resolve({cmd:`ffmpeg -i ${oldVideoFile2} -af volume=10 -vcodec copy ${newVideoFile}`,old:oldVideoFile2})
             }
         })
     })
