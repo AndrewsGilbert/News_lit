@@ -1,0 +1,7 @@
+node_modules
+package-lock.json
+audio-from-text.json
+old
+video
+subtitlegen.js
+

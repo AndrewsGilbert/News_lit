@@ -32,6 +32,8 @@ type inputJson = {
     id:number;
     text:string;
     startingTime:number;
+    type:string;
+    subtitle:string;
 }
 
 type content = {
@@ -150,7 +152,7 @@ let folderCreation  = function ():Promise<any>{
     fs.rmSync('video/bgm1.mp3', { recursive: true })
   }
 
-    resolve ({cmd:`ffmpeg -i video/bgm.mp3 -af volume=0.2 video/bgm1.mp3`,old:'video/bgm.mp3'})
+  resolve ({cmd:`ffmpeg -i video/bgm.mp3 -af volume=0.2 video/bgm1.mp3`,old:'video/bgm.mp3'})
   })
   return myPromise
 }
@@ -173,8 +175,10 @@ let inputJsonGen = function ():Promise<string>{
             const data = <inputJson>{}
 
             data.id = i
-            data.text = root.querySelector(`tts:nth-of-type(${i})`).innerText
+            data.text = root.querySelector(`tts:nth-of-type(${i})`).innerHTML
+            data.subtitle = root.querySelector(`tts:nth-of-type(${i})`).innerText
             data.startingTime = Math.ceil(Number(root.querySelector(`tts:nth-of-type(${i})`).attrs.t)/1000)
+            data.type = root.querySelector(`tts:nth-of-type(${i})`).attrs.type
 
             input[i-1] = data
             if(data.text.length >= 5000){
@@ -197,9 +201,16 @@ let genAudio =  function ():Promise<content>{
     let myPromise = new  Promise<content>  (async(resolve, reject)  =>  {
 
         if(!audioFiles.includes(fileName)){
+          let inp 
+          if(input[objectInd].type === "text"){
+            inp = {"text":input[objectInd].text}
+          }
+          else{
+            inp ={"ssml":input[objectInd].text}
+          }
             const request = {
                 "audioConfig":audioConfigObject,
-                "input":{"text":input[objectInd].text},
+                "input":inp,
                 "voice":languageConfigObject[country[languageInd]]
             }
 
@@ -465,7 +476,7 @@ let recur2 = function (oldVideoFile:any){
 }
 
 function firstSubtitleGen () {
-  nText = input[indexOfInputText].text.split(/\r?\n/).join(' ')
+  nText = input[indexOfInputText].subtitle.split(/\r?\n/).join(' ')
   console.log(nText)
   startTime = input[indexOfInputText].startingTime
   const duration = outputDetail[indexOfInputText].duration
@@ -527,20 +538,5 @@ function subtitle () {
 }
 
 folderCreation().then(volumeAdjust).then(inputJsonGen).then(genAudio).then(duration).then(speedCheck)
-
-
-
-// export GOOGLE_APPLICATION_CREDENTIALS="/home/andrews-zt589/Documents/Zoho/excercise_task/Video_Search-test/audio-from-text.json"
-
-//const cliPath:string = `ffmpeg -i bgm.wav -i ${oldVideoFile} -filter_complex \ "[0:a]volume=0.05[a1];[1:a]volume=4[a2];[a1][a2]amerge,pan=stereo|c0<c0+c2|c1<c1+c3[out]" -map 1:v -map "[out]" -c:v copy -c:a aac -shortest ${newVideoFile}`
-
-// ffmpeg -i bgmOrg.mp3 -af 'volume=0.1' bgm1.mp3
-
-// ffmpeg -i test.mp4 -i bgm1.mp3 -filter_complex "[0:a]volume=10,apad[A];[1:a][A]amerge[out]" -c:v copy -map 0:v -map [out] -y -shortest output-final.mp4
-
-
-
-// ffmpeg -y -i video/SourceVideo.mp4 -i video/audio/index-1-india.mp3 -i video/audio/index-2-india.1.0248648648648648.mp3 -i video/audio/index-3-india.mp3 -i video/audio/index-4-india.mp3 -filter_complex "[1]adelay=delays=1s:all=1[r1]; [2]adelay=delays=6s:all=1[r2]; [3]adelay=delays=15s:all=1[r3]; [4]adelay=delays=17s:all=1[r4]; [r1][r2][r3][r4]amix=inputs=4[a]"  -map 0:v -map "[a]" -codec:v copy video/output-video/india.old.mp4 
-
 
 

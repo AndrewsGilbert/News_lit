@@ -3,22 +3,36 @@
     {
       "id": 1,
       "text": "Let us see how a grid layout can be created in Pali App Studio.",
-      "startingTime": 1
+      "subtitle": "Let us see how a grid layout can be created in Pali App Studio.",
+      "startingTime": 1,
+      "type": "text"
     },
     {
       "id": 2,
       "text": "This offers a grid-based layout system, with rows and columns, making it easier to design web pages without having to use floats and positioning.",
-      "startingTime": 6
+      "subtitle": "This offers a grid-based layout system, with rows and columns, making it easier to design web pages without having to use floats and positioning.",
+      "startingTime": 6,
+      "type": "text"
     },
     {
       "id": 3,
       "text": "Created column line.",
-      "startingTime": 15
+      "subtitle": "Created column line.",
+      "startingTime": 15,
+      "type": "text"
     },
     {
       "id": 4,
       "text": "Row line also created. Thank you!",
+      "subtitle": "Row line also created. Thank you!",
       "startingTime": 17
+    },
+    {
+      "id": 5,
+      "text": "\n<speak>123 Street Ln, Small Town, IL 12345 USA\n<break time=\"2s\"></break>1 Jenny St &amp; Number St, Tutone City, CA 86753\n<break time=\"2s\"></break>1 Piazza del Fibonacci, 12358 Pisa, Italy\n<break time=\"2s\"></break></speak>\n",
+      "subtitle": "\n123 Street Ln, Small Town, IL 12345 USA\n1 Jenny St &amp; Number St, Tutone City, CA 86753\n1 Piazza del Fibonacci, 12358 Pisa, Italy\n\n",
+      "startingTime": 21,
+      "type": "ssml"
     }
   ],
   "output": {
@@ -47,6 +61,12 @@
           "id": 4,
           "duration": 2.8724583333333333,
           "endingTime": 19.872458333333334
+        },
+        {
+          "audioFilename": "video/gcp-audio/index-5-india.mp3",
+          "id": 5,
+          "duration": 22.571458333333332,
+          "endingTime": 43.57145833333333
         }
       ],
       "videoFilename": "video/output-video/india.mp4"
@@ -76,6 +96,12 @@
           "id": 4,
           "duration": 3.1998333333333333,
           "endingTime": 20.199833333333334
+        },
+        {
+          "audioFilename": "video/gcp-audio/index-5-uk.mp3",
+          "id": 5,
+          "duration": 24.738666666666667,
+          "endingTime": 45.73866666666667
         }
       ],
       "videoFilename": "video/output-video/uk.mp4"
@@ -105,6 +131,12 @@
           "id": 4,
           "duration": 2.9055,
           "endingTime": 19.9055
+        },
+        {
+          "audioFilename": "video/gcp-audio/index-5-usa.mp3",
+          "id": 5,
+          "duration": 24.408083333333334,
+          "endingTime": 45.40808333333334
         }
       ],
       "videoFilename": "video/output-video/usa.mp4"

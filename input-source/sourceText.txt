@@ -1,16 +1,23 @@
 <h3>Introduction to Grid</h3>
 
-<tts t="1000" >Let us see how a grid layout can be created in Pali App Studio.</tts>
+<tts t="1000" type="text" >Let us see how a grid layout can be created in Pali App Studio.</tts>
 
 <h4>Grid Properties</h4>
 
-<tts t="6000" >This offers a grid-based layout system, with rows and columns, making it easier to design web pages without having to use floats and positioning.</tts>
+<tts t="6000" type="text"  >This offers a grid-based layout system, with rows and columns, making it easier to design web pages without having to use floats and positioning.</tts>
 
 <h4>Grid Action</h4>
 
-<tts t="15000" >Created column line.</tts>
+<tts t="15000" type="text"  >Created column line.</tts>
 
 <tts t="17000" >Row line also created. Thank you!</tts>
+
+<tts t="21000" type="ssml"  >
+<speak>123 Street Ln, Small Town, IL 12345 USA
+<break time="2s"/>1 Jenny St &amp; Number St, Tutone City, CA 86753
+<break time="2s"/>1 Piazza del Fibonacci, 12358 Pisa, Italy
+<break time="2s"/></speak>
+</tts>
 
 
 
